@@ -1,26 +1,86 @@
 import streamlit as st
 import joblib
 
-# Load the trained model
+# -------------------------------
+# Load Model
+# -------------------------------
 model = joblib.load("solar_power_model.pkl")
 
-# App Title
+# -------------------------------
+# Page Configuration
+# -------------------------------
+st.set_page_config(
+    page_title="Solar Power Predictor",
+    page_icon="☀️",
+    layout="centered"
+)
+
+# -------------------------------
+# Title
+# -------------------------------
 st.title("☀️ Solar Power Predictor")
+st.write("Predict solar power generation using a Machine Learning model.")
 
-st.write("Enter the values below to predict solar power generation.")
+st.markdown("---")
 
-# User Inputs
-temperature = st.number_input("Temperature (°C)", value=30.0)
-prectotland = st.number_input("Prectotland", value=0.0)
-rhoa = st.number_input("Rhoa", value=1.2)
-irradiance_g = st.number_input("Irradiance (G)", value=700.0)
-irradiance_a = st.number_input("Irradiance (A)", value=680.0)
-cloud = st.number_input("Cloud", value=7.0)
+# -------------------------------
+# Input Section
+# -------------------------------
+st.subheader("Enter Input Values")
 
-# Predict Button
-if st.button("Predict"):
+col1, col2 = st.columns(2)
 
-    # Feature order MUST match the training data
+with col1:
+    temperature = st.number_input(
+        "Temperature (°C)",
+        min_value=3.4,
+        max_value=32.4,
+        value=20.0
+    )
+
+    prectotland = st.number_input(
+        "Prectotland",
+        min_value=0.0,
+        max_value=3.35,
+        value=0.0
+    )
+
+    rhoa = st.number_input(
+        "Rhoa",
+        min_value=1.13,
+        max_value=1.24,
+        value=1.18
+    )
+
+with col2:
+    irradiance_g = st.number_input(
+        "Irradiance (G)",
+        min_value=0.0,
+        max_value=720.0,
+        value=300.0
+    )
+
+    irradiance_a = st.number_input(
+        "Irradiance (A)",
+        min_value=0.0,
+        max_value=1015.0,
+        value=500.0
+    )
+
+    cloud = st.number_input(
+        "Cloud",
+        min_value=0.0,
+        max_value=1.0,
+        value=0.2
+    )
+
+st.markdown("---")
+
+# -------------------------------
+# Prediction
+# -------------------------------
+if st.button("🔍 Predict Solar Power"):
+
     prediction = model.predict([[
         temperature,
         prectotland,
@@ -30,4 +90,8 @@ if st.button("Predict"):
         cloud
     ]])
 
-    st.success(f"Predicted Solar Power: {prediction[0]:.2f}")
+    st.success(f"⚡ Predicted Solar Power: {prediction[0]:.2f} W")
+
+st.markdown("---")
+
+st.caption("Developed using Python, Streamlit, Scikit-learn and Linear Regression.")
